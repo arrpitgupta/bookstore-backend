@@ -1,0 +1,21 @@
+{
+  "name": "bookstore-backend",
+  "version": "1.0.0",
+  "description": "bookstore backend with search and list",
+  "main": "server.js",
+  "type":"module",
+  "scripts": {
+    "start": "nodemon server.js"
+  },
+
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "mongoose": "^8.8.4",
+    "nodemon": "^3.1.7"
+  }
+}
