@@ -22,6 +22,14 @@ const bookSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    publishedYear: {
+        type: Number,
+        required: true
+    },
+    genre: {
+        type: String,
+        required: true 
+    },
 });
 
 const Book = mongoose.model("Book", bookSchema);

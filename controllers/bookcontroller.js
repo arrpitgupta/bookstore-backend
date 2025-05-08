@@ -4,7 +4,7 @@ export const searchBooks = async (req, res) => {
   const {
     query,
     page = 1,
-    limit = 10,
+    limit = 8,
     sortBy = "title",
     sortOrder = "asc",
   } = req.query;
@@ -13,26 +13,27 @@ export const searchBooks = async (req, res) => {
   const sortDirection = sortOrder === "asc" ? 1 : -1;
 
   try {
-    let books;
+    const regex = query ? new RegExp(query, "i") : null;
 
-    if (query) {
-      const regex = new RegExp(query, "i");
-      books = await Book.find({
-        $or: [
-          { title: { $regex: regex } },
-          { author: { $regex: regex } },
-          { category: { $regex: regex } },
-          { description: { $regex: regex } },
-        ],
-      });
-    } else {
-      books = await Book.find()
-        .skip(skip)
-        .limit(Number(limit))
-        .sort({ [sortBy]: sortDirection });
+    let filter = {};
+    if (regex) {
+      filter.$or = [
+        { title: { $regex: regex } },
+        { author: { $regex: regex } },
+        { category: { $regex: regex } },
+        { description: { $regex: regex } },
+      ];
     }
+    
+   const books = await Book.find(filter)
+      .skip(skip)
+      .limit(Number(limit))
+      .sort({ [sortBy]: sortDirection });
+    
+    const totalBooks = await Book.countDocuments(filter);
+    
 
-    const totalBooks = await Book.countDocuments();
+    // const totalBooks = await Book.countDocuments();
 
     return res.status(200).json({
       books,
@@ -78,3 +79,13 @@ export const createBook = async (req, res) => {
     return res.status(500).json({ message: "Error creating book" });
   }
 };
+export const getCategories = async (req, res) => {
+  try {
+    const categories = await Book.distinct("category");
+    res.status(200).json(categories);
+  } catch (error) {
+    console.error("Error fetching categories", error);
+    res.status(500).json({ message: "Error fetching categories" });
+  }
+};
+
