@@ -1,4 +1,3 @@
-// controllers/bookController.js
 import Book from "../model/books.js";
 
 export const searchBooks = async (req, res) => {
@@ -8,43 +7,32 @@ export const searchBooks = async (req, res) => {
     limit = 10,
     sortBy = "title",
     sortOrder = "asc",
-    category,
-    minPrice,
-    maxPrice,
   } = req.query;
 
   const skip = (page - 1) * limit;
   const sortDirection = sortOrder === "asc" ? 1 : -1;
 
   try {
-    let filter = {};
+    let books;
 
     if (query) {
       const regex = new RegExp(query, "i");
-      filter.$or = [
-        { title: { $regex: regex } },
-        { author: { $regex: regex } },
-        { category: { $regex: regex } },
-        { description: { $regex: regex } },
-      ];
+      books = await Book.find({
+        $or: [
+          { title: { $regex: regex } },
+          { author: { $regex: regex } },
+          { category: { $regex: regex } },
+          { description: { $regex: regex } },
+        ],
+      });
+    } else {
+      books = await Book.find()
+        .skip(skip)
+        .limit(Number(limit))
+        .sort({ [sortBy]: sortDirection });
     }
 
-    if (category) {
-      filter.category = category;
-    }
-
-    if (minPrice || maxPrice) {
-      filter.price = {};
-      if (minPrice) filter.price.$gte = Number(minPrice);
-      if (maxPrice) filter.price.$lte = Number(maxPrice);
-    }
-
-    const books = await Book.find(filter)
-      .skip(Number(skip))
-      .limit(Number(limit))
-      .sort({ [sortBy]: sortDirection });
-
-    const totalBooks = await Book.countDocuments(filter);
+    const totalBooks = await Book.countDocuments();
 
     return res.status(200).json({
       books,
@@ -68,6 +56,7 @@ export const createBook = async (req, res) => {
   }
 
   try {
+    // Create a new book
     const newBook = new Book({
       title,
       author,
@@ -78,6 +67,7 @@ export const createBook = async (req, res) => {
       description,
     });
 
+    // Save the book to the database
     await newBook.save();
 
     return res
@@ -86,15 +76,5 @@ export const createBook = async (req, res) => {
   } catch (error) {
     console.error("Error creating book", error);
     return res.status(500).json({ message: "Error creating book" });
-  }
-};
-
-export const getCategories = async (req, res) => {
-  try {
-    const categories = await Book.distinct("category");
-    res.status(200).json(categories);
-  } catch (error) {
-    console.error("Error fetching categories", error);
-    res.status(500).json({ message: "Error fetching categories" });
   }
 };
