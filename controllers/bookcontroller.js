@@ -31,9 +31,6 @@ export const searchBooks = async (req, res) => {
       .sort({ [sortBy]: sortDirection });
     
     const totalBooks = await Book.countDocuments(filter);
-    
-
-    // const totalBooks = await Book.countDocuments();
 
     return res.status(200).json({
       books,
