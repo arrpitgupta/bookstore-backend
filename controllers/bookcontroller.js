@@ -85,4 +85,20 @@ export const getCategories = async (req, res) => {
     res.status(500).json({ message: "Error fetching categories" });
   }
 };
+export const deleteBook = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const deletedBook = await Book.findByIdAndDelete(id);
+
+    if (!deletedBook) {
+      return res.status(404).json({ message: "Book not found" });
+    }
+
+    return res.status(200).json({ message: "Book deleted successfully", book: deletedBook });
+  } catch (error) {
+    console.error("Error deleting book", error);
+    return res.status(500).json({ message: "Error deleting book" });
+  }
+};
 
