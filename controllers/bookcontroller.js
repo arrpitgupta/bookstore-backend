@@ -102,3 +102,33 @@ export const deleteBook = async (req, res) => {
   }
 };
 
+export const updateBookPrice = async (req, res) => {
+  const { id } = req.params;
+  const { price } = req.body;
+
+  if (typeof price !== "number" || price < 0) {
+    return res.status(400).json({ message: "Invalid price value" });
+  }
+
+  try {
+    const updatedBook = await Book.findByIdAndUpdate(
+      id,
+      { price },
+      { new: true }
+    );
+
+    if (!updatedBook) {
+      return res.status(404).json({ message: "Book not found" });
+    }
+
+    return res.status(200).json({
+      message: "Book price updated successfully",
+      book: updatedBook,
+    });
+  } catch (error) {
+    console.error("Error updating book price", error);
+    return res.status(500).json({ message: "Error updating book price" });
+  }
+};
+
+

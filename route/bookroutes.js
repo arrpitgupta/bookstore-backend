@@ -1,5 +1,5 @@
 import express from "express";
-import { searchBooks, createBook, getCategories, deleteBook } from "../controllers/bookcontroller.js";
+import { searchBooks, createBook, getCategories, deleteBook, updateBookPrice } from "../controllers/bookcontroller.js";
 
 const router = express.Router();
 
@@ -7,7 +7,8 @@ const router = express.Router();
 router.get("/list", searchBooks);
 router.post("/create", createBook);
 router.get("/categories", getCategories);
-router.delete("/books/:id", deleteBook);
+router.delete("/deleteBook/:id", deleteBook);
+router.put("/updateBook/:id", updateBookPrice);
 
 
 export default router;
