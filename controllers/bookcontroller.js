@@ -46,15 +46,15 @@ export const searchBooks = async (req, res) => {
 };
 
 export const createBook = async (req, res) => {
-  const { title, author, publishedYear, genre, price, category, description } =
-    req.body;
+  const { title, author, publishedYear, genre, price, category, description } = req.body;
 
   if (!title || !author || !publishedYear || !genre || !price || !category) {
     return res.status(400).json({ message: "All fields are required" });
   }
 
+  const imageUrl = req.file?.path;
+
   try {
-   
     const newBook = new Book({
       title,
       author,
@@ -63,14 +63,12 @@ export const createBook = async (req, res) => {
       price,
       category,
       description,
+      imageUrl,
     });
 
-    // Save the book to the database
     await newBook.save();
 
-    return res
-      .status(201)
-      .json({ message: "Book created successfully", book: newBook });
+    return res.status(201).json({ message: "Book created successfully", book: newBook });
   } catch (error) {
     console.error("Error creating book", error);
     return res.status(500).json({ message: "Error creating book" });
