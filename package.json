@@ -3,20 +3,22 @@
   "version": "1.0.0",
   "description": "bookstore backend with search and list",
   "main": "server.js",
-  "type":"module",
- "scripts": {
-  "start": "node server.js",
-  "dev": "nodemon server.js"
-},
-
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "cloudinary": "^1.41.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "mongoose": "^8.8.4",
+    "multer": "^1.4.5-lts.2",
+    "multer-storage-cloudinary": "^4.0.0",
     "nodemon": "^3.1.7"
   }
 }
